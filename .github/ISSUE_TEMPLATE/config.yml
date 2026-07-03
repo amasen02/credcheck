@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/amasen02/credcheck/security/advisories/new
+    about: Please report security issues privately via a GitHub security advisory, not a public issue (see SECURITY.md).
+  - name: False positive / missed secret
+    url: https://github.com/amasen02/credcheck/issues/new?template=detection_report.yml
+    about: Report a detection rule that fires incorrectly or a real secret shape that isn't caught.
+  - name: Question or discussion
+    url: https://github.com/amasen02/credcheck/discussions
+    about: Ask questions, share ideas, or discuss usage.

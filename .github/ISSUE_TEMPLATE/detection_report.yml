@@ -1,0 +1,43 @@
+name: Detection report (false positive / false negative)
+description: A rule fired on something that isn't a secret, or missed one that is.
+labels: ["detection"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never paste a real secret value here**, even a rotated/revoked one. Use a synthetic example
+        with the same shape (same prefix, same length, same character set) as the real one.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - False positive (flagged something that isn't a secret)
+        - False negative (missed a real secret shape)
+    validations:
+      required: true
+  - type: input
+    id: rule
+    attributes:
+      label: Rule id
+      description: From the finding's `[rule-id]` in text output, or `ruleId` in `--json` output. Leave blank for a false negative with no matching rule.
+      placeholder: generic-api-key-assignment
+    validations:
+      required: false
+  - type: textarea
+    id: sample
+    attributes:
+      label: Synthetic sample
+      description: A minimal, fake line that reproduces the issue.
+      render: text
+      placeholder: |
+        const apiKey = "example-value-with-the-same-shape-as-the-real-one";
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs. actual
+      description: What credcheck did, and what it should have done instead.
+    validations:
+      required: true

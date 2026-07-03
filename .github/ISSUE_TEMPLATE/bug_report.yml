@@ -1,0 +1,56 @@
+name: Bug report
+description: Report a defect in the CLI itself (crash, wrong exit code, wrong file handling, ...).
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Please search existing issues first to avoid duplicates.
+        For a rule that misfires or misses a real secret, use the "Detection report" template instead.
+        Do not paste real credentials, private paths, or file contents you don't want public - redact
+        or use a synthetic example that reproduces the shape of the problem.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+      placeholder: When I ran ..., I expected ..., but instead ...
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: The exact `credcheck` command you ran.
+      render: shell
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Filesystem scanning
+        - --staged / git diff parsing
+        - Allowlist / suppression
+        - CLI parsing / options
+        - Output formats (text / JSON)
+        - Other / not sure
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS + `node --version` + credcheck version (`credcheck --version`).
+      placeholder: Windows 11, Node 22.10.0, credcheck 1.0.0
+    validations:
+      required: false
+  - type: textarea
+    id: output
+    attributes:
+      label: Output / error
+      description: Paste the relevant credcheck output (redact any real secret values first).
+      render: shell
+    validations:
+      required: false
