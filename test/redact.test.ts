@@ -28,3 +28,19 @@ void test("redactSecret: caps the masked middle so huge blobs (e.g. a PEM key) s
   assert.ok(redacted.startsWith("AAAA"));
   assert.ok(redacted.endsWith("BBBB"));
 });
+
+void test("redactSecret: values below 12 characters are masked in full, not near-fully revealed", () => {
+  assert.equal(redactSecret("123456789"), "*********");
+  assert.equal(redactSecret("0123456789"), "**********");
+  assert.equal(redactSecret("abcdefghijk"), "***********");
+});
+
+void test("redactSecret: never reveals more than 40% of a value's characters", () => {
+  const source = "aB3xZ9qW7mK2pL5vT8nR4jH6";
+  for (let length = 1; length <= 96; length += 1) {
+    const value = source.repeat(Math.ceil(length / source.length)).slice(0, length);
+    const revealed = redactSecret(value).replace(/\*/g, "").length;
+    assert.ok(revealed <= Math.floor(length * 0.4), `length ${length} revealed ${revealed} characters`);
+    assert.ok(revealed <= 8, `length ${length} revealed ${revealed} characters`);
+  }
+});

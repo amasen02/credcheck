@@ -5,6 +5,23 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Keyed rules (`generic-api-key-assignment`, `hardcoded-password-assignment`,
+  `aws-secret-access-key`) now fire on quoted keys, so JSON configuration files are actually
+  scanned. The assignment regex required the key to be followed directly by `:` or `=`, which the
+  closing quote in `"apiKey": "..."` always blocked - every secret in `appsettings.json`,
+  `config.json`, `firebase*.json` and similar files was silently missed.
+
+### Security
+
+- `redactSecret` no longer near-fully discloses short secrets. A 9-character password was printed
+  with 8 of its 9 characters intact (`Summ*r!23`), and README-recommended usage writes that output
+  to CI logs and `report.json`. Values under 12 characters are now masked in full, and longer ones
+  reveal at most 40% of their characters (never more than 4 per edge).
+
 ## [1.0.0] - 2026-07-03
 
 ### Added

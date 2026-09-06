@@ -130,3 +130,30 @@ void test("detectInLines: scans only the given sparse line numbers, preserving t
   const finding = onlyFinding(findings);
   assert.equal(finding.line, 5);
 });
+
+void test("detectInContent: flags a high-entropy value under a JSON-quoted key and reports the value's column", () => {
+  const secret = "e2yiUY9BFgL+bejJLptPb6Sk";
+  const finding = onlyFinding(detectInContent("appsettings.json", `  "apiKey": "${secret}",`, BUILT_IN_RULES));
+  assert.equal(finding.ruleId, "generic-api-key-assignment");
+  assert.equal(finding.secret, secret);
+  assert.equal(finding.column, 14);
+});
+
+void test("detectInContent: flags a literal credential under a JSON-quoted key", () => {
+  const finding = onlyFinding(detectInContent("config.json", '  "password": "NotARealValue42",', BUILT_IN_RULES));
+  assert.equal(finding.ruleId, "hardcoded-password-assignment");
+  assert.equal(finding.secret, "NotARealValue42");
+});
+
+void test("detectInContent: flags a high-entropy value under a single-quoted key", () => {
+  const secret = "e2yiUY9BFgL+bejJLptPb6Sk";
+  const finding = onlyFinding(detectInContent("config.js", `{ 'client_secret': '${secret}' }`, BUILT_IN_RULES));
+  assert.equal(finding.ruleId, "generic-api-key-assignment");
+  assert.equal(finding.secret, secret);
+});
+
+void test("detectInContent: a quoted key does not weaken the placeholder and entropy bars", () => {
+  assert.equal(detectInContent("config.json", '  "apiKey": "your-key-here",', BUILT_IN_RULES).length, 0);
+  assert.equal(detectInContent("config.json", '  "password": "changeme",', BUILT_IN_RULES).length, 0);
+  assert.equal(detectInContent("config.json", '  "apiKey": "aaaaaaaaaaaaaaaaaaaa",', BUILT_IN_RULES).length, 0);
+});
